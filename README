@@ -1,0 +1,93 @@
+2. Imagine a graph that consists of directional links between nodes identified by small non-negative
+integers < 2**16. We define a "cycle" in the graph as a nonempty set of links that connect a node to
+itself. 
+Imagine an application that allows insertion of links, but wants to prevent insertion of links that
+close cycles in the graph. 
+For example, starting from an empty graph, inserting links 1 ->2 and 2 -> 3 would succeed; but
+inserting a third link 3 -> 1 would fail, since it would close the cycle 1 -> 2 -> 3 -> 1. However,
+inserting a link 1 -> 3 instead would succeed. 
+In your favorite programming language, declare data structures to represent your graph, and give
+code for an "insert link" function that fails if a new link would close a cycle. What, roughly, is
+the space- and time-complexity of your solution?
+
+Analog solution:
+
+There is a constant space, constant time solution (up to about 2^1600 with current technology) to
+this problem which can be acheived with DNA hybridization technologies.  
+
+Data structures:
+Each node would be represented by an 8-mer of DNA. There are 4 different bases so each base encodes 4 bits. 
+Create any 9-mer to act as a distinct linker. Each link a 25-mer encoded by joining the 8-mer
+representing the origin node, the linking 9-mer, and the 8-mer representing the destination. 
+
+
+Insert link function:
+
+The 25-mer encoding the link is add to all existing links (initially none), in a matrix that
+contains bindings for all possible. Solution is run through an analyzer that retains linear DNA
+molecules. Any circular molecules indicate a cycle has been formed. 
+
+Detail
+
+Encoding: 
+Create all possible 8-mers of DNA
+
+Each 2 bits of the node number corresponds to a base on the positive strand of DNA
+
+00 -> A
+01 -> T
+10 -> G
+11 -> C
+
+Express the origin of the link in this format, with an ATGC orienting sequence, and the destination
+in the opposite format. 
+
+Each link is an 12-mer.  1 -> 2 would be
+
+AAAAAAATATGCTTTTTTTCTACG
+
+Links starting with 2
+
+AAAAAAAGATGC------------
+
+Would bind with the 1 -> 2 strands
+
+AAAAAAATATGCTACGTTTTTTTC
+            ATGCAAAAAAAG------------
+
+etc.
+
+Starting with 1 -> 2 and adding 2 -> 1 would be 
+
+AAAAAAATATGCTACGTTTTTTTC + AAAAAAAGATGCTACGTTTTTTTA
+
+An these would form a circle
+
+AAAAAAATATGCTACGTTTTTTTC + AAAAAAAGATGCTACGTTTTTTTA
+                AAAAAAAGATGCTACGTTTTTTTA   AAAAAAATATGCTACGTTTTTTTC + 
+
+
+
+Matrix solution:
+
+Define a matrix, integer or boolean,
+
+SIZE = 2^16
+linked[SIZE][SIZE] = 0
+
+def insert_link(i,j)
+
+if linked[j][i] == 1
+  return false
+else if linked[i][j] == 1
+  return true # Do nothing
+else
+  link[i][j] = 1
+  for k = 1; k < SIZE ; k++
+    linked[i][k] = linked[k][j]
+  end
+  return true
+end
+
+end
+
